@@ -9,6 +9,9 @@ function constrain<TRecord extends {} = any, TResult = any>(
   this: Knex.QueryBuilder<TRecord, TResult>,
   constraint: Constraint
 ) {
+  if(!constraint) {
+    return this;
+  }
   if (constraint.filter) {
     this.filter(constraint.filter);
   }
@@ -18,8 +21,11 @@ function constrain<TRecord extends {} = any, TResult = any>(
 
 function filter<TRecord extends {} = any, TResult = any>(
   this: Knex.QueryBuilder<TRecord, TResult>,
-  filter: FilterConstraint
+  filter?: FilterConstraint
 ) {
+  if(!filter) {
+    return this;
+  }
   for (const k in filter) {
     let c = filter.k;
     if (c.eq) {
@@ -48,10 +54,10 @@ declare module "knex" {
   namespace Knex {
     interface QueryBuilder<TRecord extends {} = any, TResult = any> {
       constrain(
-        constraint: Constraint
+        constraint?: Constraint
       ): Knex.QueryBuilder<TRecord, TResult>;
       filter(
-        filter: FilterConstraint
+        filter?: FilterConstraint
       ): Knex.QueryBuilder<TRecord, TResult>;
     }
   }
