@@ -1,6 +1,6 @@
 {
   "name": "knex-constrain",
-  "version": "0.1.0",
+  "version": "0.0.0-semantically-released",
   "description": "Adds functionality to knex to easily filter, sort, and paginate queries",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
