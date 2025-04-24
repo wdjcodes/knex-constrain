@@ -1,4 +1,6 @@
 import knex, { Knex } from "knex";
+import { filter, FilterConstraint } from "./filter";
+
 
 export function attachConstraints(){
   knex.QueryBuilder.extend("constrain", constrain);
@@ -7,7 +9,7 @@ export function attachConstraints(){
 
 function constrain<TRecord extends {} = any, TResult = any>(
   this: Knex.QueryBuilder<TRecord, TResult>,
-  constraint: Constraint
+  constraint: Constraint<TRecord>
 ) {
   if(!constraint) {
     return this;
@@ -19,45 +21,18 @@ function constrain<TRecord extends {} = any, TResult = any>(
   return this;
 }
 
-function filter<TRecord extends {} = any, TResult = any>(
-  this: Knex.QueryBuilder<TRecord, TResult>,
-  filter?: FilterConstraint
-) {
-  if(!filter) {
-    return this;
-  }
-  for (const k in filter) {
-    let c = filter.k;
-    if (c.eq) {
-      this.where(k, "=", c.eq);
-    }
-  }
-
-  return this;
-}
-
-export type Constraint = {
-  filter?: FilterConstraint;
-};
-
-export type FilterConstraint = {
-  [k: string]: ConstraintOperator;
-};
-
-type ConstraintOperator = EqConstraint;
-
-type EqConstraint = {
-  eq: string | number;
+export type Constraint<TRecord> = {
+    filter?: FilterConstraint<TRecord>
 };
 
 declare module "knex" {
   namespace Knex {
     interface QueryBuilder<TRecord extends {} = any, TResult = any> {
       constrain(
-        constraint?: Constraint
+        constraint?: Constraint<TRecord>
       ): Knex.QueryBuilder<TRecord, TResult>;
       filter(
-        filter?: FilterConstraint
+        filter?: FilterConstraint<TRecord>
       ): Knex.QueryBuilder<TRecord, TResult>;
     }
   }
